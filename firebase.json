@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "Barbershop",
+    "public": "Elit Reviews",
     "ignore": [
       "firebase.json",
       "**/.*",
