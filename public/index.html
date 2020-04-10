@@ -1,0 +1,167 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <title>Elit Reviews</title>
+</head>
+<body class="grey lighten-3"">
+
+ 
+  <nav class="z-depth-0 grey lighten-4">
+    <div class="nav-wrapper container">
+      <a href="#" class="brand-logo">
+       
+      </a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li class="logged-in" style="display: none;"> 
+            <a href="#" class="grey-text modal-trigger" data-target="modal-account">Account</a>
+          </li>
+          <li class="logged-in" style="display: none;">
+            <a href="#" class="grey-text" id="logout">Logout</a>
+          </li>
+          <li class="logged-in" style="display: none;">
+            <a href="#" class="grey-text modal-trigger" data-target="modal-create">Create Review</a>
+          </li>
+          <li class="logged-out" style="display: none;">
+            <a href="#" class="grey-text modal-trigger" data-target="modal-login">Login</a>
+          </li>
+          <li class="logged-out" style="display: none;">
+            <a href="#" class="grey-text modal-trigger" data-target="modal-signup">Sign up</a>
+          </li>
+        </span>
+      </ul>
+    </div>
+  </nav>
+
+   <!-- Admin options -->
+   <form class="center-align admin-actions admin" style="margin: 40px auto; max-width: 300px; display: none; ">
+    <input type="email" placeholder="User email" id="admin-email" required />
+    <button class="btn-small blue darken-2 z-depth-0">Make admin</button>
+  </form>
+
+  <!-- signup popup -->
+  <div id="modal-signup" class="modal">
+    <div class="modal-content">
+      <h4>Sign up</h4><br />
+      <form id="signup-form">
+        <div class="input-field">
+          <input type="text" id="signup-username" required />
+          <label for="signup-email">Display name</label>
+        </div>
+        <div class="input-field">
+          <input type="email" id="signup-email" required />
+          <label for="signup-email">Email address</label>
+        </div>
+        <div class="input-field">
+          <input type="password" id="signup-password" required />
+          <label for="signup-password">Choose password</label>
+        </div>
+        <button class="btn blue darken-2 z-depth-0">Sign up</button>
+        <p class ="error pink-text center-align"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Login popup -->
+  <div id="modal-login" class="modal">
+    <div class="modal-content">
+      <h4>Login</h4><br />
+      <form id="login-form">
+        <div class="input-field">
+          <input type="email" id="login-email" required />
+          <label for="login-email">Email address</label>
+        </div>
+        <div class="input-field">
+          <input type="password" id="login-password" required />
+          <label for="login-password">Your password</label>
+        </div>
+        <button class="btn blue darken-2 z-depth-0">Login</button>
+        <p class ="error pink-text center-align"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Account details popup -->
+  <div id="modal-account" class="modal">
+    <div class="modal-content center-align">
+      <h4>Account details</h4><br />
+      <div class="account-details"></div>
+      <div class="account-extras"></div>
+      <button onclick="send_verification()" class="btn blue darken-2 z-depth-0 button1 emailVerify">Resend Verification Email</button>
+    </br>
+    <button onclick="passwordReset()" class="btn blue darken-2 z-depth-0 button1">Reset password</button>
+      </div>
+   
+    </div>
+  </div>
+
+
+
+  <!-- Create review popup -->
+  <div id="modal-create" class="modal">
+    <div class="modal-content">
+      <h4>Create Review</h4><br />
+      <form id="create-form">
+        <div class="input-field">
+          <input type="text" id="title" required>
+          <label for="title">Review Title</label>
+        </div>
+        <div class="input-field">
+          <textarea id="content" class="materialize-textarea" required></textarea>
+          <label for="content">Review Content</label>
+        </div>
+        <button class="btn blue darken-2 z-depth-0">Create</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Review list -->
+  <div class="container" style="margin-top: 40px;">
+    <ul class="collapsible z-depth-0 reviews reviews-list" style="border: none;">
+
+    </ul>
+  </div>
+
+
+  
+  <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-functions.js"></script>
+  <script>
+    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyD1GgZHPbLU894vyGZqbhd_naJy7mU5kw0",
+  authDomain: "elit-reviews.firebaseapp.com",
+  databaseURL: "https://elit-reviews.firebaseio.com",
+  projectId: "elit-reviews",
+  storageBucket: "elit-reviews.appspot.com",
+  messagingSenderId: "197612711343",
+  appId: "1:197612711343:web:57e1350e0aa6242f7cd35a",
+  measurementId: "G-ZDH71F9445"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    
+    // make auth and firestore references
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const functions = firebase.functions();
+
+ 
+
+
+    // update firestore settings
+    db.settings({ timestampsInSnapshots: true });
+  </script>
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="scripts/auth.js"></script>
+  <script src="scripts/index.js"></script>
+</body>
+</html>

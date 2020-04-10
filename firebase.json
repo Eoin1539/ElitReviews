@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "Elit Reviews",
+    "public": "public",
     "ignore": [
       "firebase.json",
       "**/.*",
